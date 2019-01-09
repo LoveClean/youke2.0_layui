@@ -1,0 +1,92 @@
+{
+  "contentManagement": [
+    {
+      "title": "数字地图",
+      "icon": "icon-liulanqi",
+      "href": "page/maps/ListMaps.html",
+      "spread": false
+    },
+    {
+      "title": "广告管理",
+      "icon": "&#xe653;",
+      "href": "",
+      "spread": false,
+      "children": [
+        {
+          "title": "广告列表",
+          "icon": "&#xe649;",
+          "href": "page/advertising/ListAdvertising.html",
+          "spread": false
+        },
+        {
+          "title": "广告投放",
+          "icon": "&#xe66b;",
+          "href": "page/advertisingPut/ListAdvertisingPut.html",
+          "spread": false
+        },
+        {
+          "title": "广告分组",
+          "icon": "&#xe668;",
+          "href": "page/advertisingGroup/ListAdvertisingGroup.html",
+          "spread": false
+        }
+      ]
+    },
+    {
+      "title": "素材管理",
+      "icon": "&#xe64a;",
+      "href": "",
+      "spread": false,
+      "children": [
+        {
+          "title": "素材列表",
+          "icon": "&#xe634;",
+          "href": "page/material/ListMaterial.html",
+          "spread": false
+        },
+        {
+          "title": "素材分组",
+          "icon": "&#xe668;",
+          "href": "page/materialGroup/ListMaterialGroup.html",
+          "spread": false
+        }
+      ]
+    },
+    {
+      "title": "管理员管理",
+      "icon": "&#xe612;",
+      "href": "",
+      "spread": false,
+      "children": [
+        {
+          "title": "管理员列表",
+          "icon": "&#xe613;",
+          "href": "page/admin/ListAdmin.html",
+          "spread": false
+        },
+        {
+          "title": "操作记录",
+          "icon": "icon-log",
+          "href": "page/admin/logs.html",
+          "spread": false
+        }
+      ]
+    },
+    {
+      "title": "数据字典",
+      "icon": "&#xe663;",
+      "href": "",
+      "spread": false,
+      "children": [
+        {
+          "title": "系统参数字典",
+          "icon": "&#xe6b1;",
+          "href": "page/dictionary/syspara.html",
+          "spread": false
+        }
+      ]
+    }
+  ]
+}
+
+

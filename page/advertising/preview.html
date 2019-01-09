@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>预览--优客工厂</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="../../layui/css/layui.css" media="all"/>
+    <link rel="stylesheet" href="../../css/public.css" media="all"/>
+    <link rel="stylesheet" href="video-js.min.css">
+</head>
+<body class="childrenBody">
+<div id="content"></div>
+
+<script type="text/javascript" src="../../js/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="../../layui/layui.js"></script>
+<script type="text/javascript" src="video.min.js"></script>
+<script>
+    $(function () {
+        var type = ["视频", "视频", "图片", "直播", "视频"];
+        var src = ["http://test45.bj.bcebos.com/2018051815f78c6b1a.mov", "http://test45.bj.bcebos.com/2018051815f78c6b1a.mov", "http://urwork.bj.bcebos.com\\20181211142d1ca6b8.jpg", "http://test45.bj.bcebos.com/play.urwork.cn/anchor/s130/recording_20180425212149.m3u8", "http://test45.bj.bcebos.com/2018032920baa7b9ba.mp4"];
+        var musicTime = [0, 0, 2000, 0, 0];
+        var musicPath = ["", "", "http://urwork.bj.bcebos.com\\2018120509148085dd.mp3", "", ""];
+
+        //初始化
+        var index = 0;
+        var arr = [];
+        for (var i = 0; i < type.length; i++) {
+            arr.push([type[i], src[i], musicTime[i], musicPath[i]]);
+        }
+        init();
+
+        //初始化方法
+        function init() {
+            listenType("", index);
+            // 监听视频事件
+            $("video").on("timeupdate", function (event) {
+                onTrackedVideoFrame(this.currentTime, this.duration);
+            });
+        }
+
+        function onTrackedVideoFrame(currentTime, duration) {
+            // 当播放时间与视频总时相同时
+            if (currentTime == duration) {
+                init();
+            }
+        }
+
+        function listenType(temp, indexT) {
+            index++;
+            $("#content").html("");
+            if (arr[indexT][0] == "图片") {
+                $("#content").append('<img src="' + arr[indexT][1] + '" width="800px" height="450px"><audio src="' + arr[indexT][3] + '" autoplay></audio>');
+                setTimeout(function () {
+                    init();
+                }, arr[indexT][2])
+            } else if (arr[indexT][0] == "视频") {
+                $("#content").append('<video src="' + arr[indexT][1] + '" controls autoplay width="800px" height="450px"></video>');
+            } else if (arr[indexT][0] == "直播") {
+                $("#content").append('<video id="myVideo" controls style="max-width: 800px;max-height: 600px"><source src="' + arr[indexT][1] + '" type="application/x-mpegURL"></video>');
+                videojs('myVideo', {
+                    bigPlayButton: false,
+                    textTrackDisplay: false,
+                    posterImage: false,
+                    errorDisplay: false,
+                    autoplay: true,
+                    preload: "auto",
+                });
+            }
+        }
+    })
+</script>
+</body>
+</html>
