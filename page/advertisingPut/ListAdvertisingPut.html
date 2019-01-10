@@ -17,32 +17,26 @@
     <blockquote class="layui-elem-quote quoteBox">
         <form class="layui-form">
             <div class="layui-inline userAddress">
-                <div class="layui-input-inline" lay-filter="test1" style="width: 10%">
+                <!--<label class="layui-form-label">位置：</label>-->
+                <div class="layui-input-inline" lay-filter="test1" style="width: 13%">
                     <select name="province" lay-filter="province" class="province" id="province">
                         <option value="">省份</option>
                     </select>
                 </div>
-                <div class="layui-input-inline" style="width: 10%">
-                    <select name="city" lay-filter="city" disabled id="city">
+                <div class="layui-input-inline" style="width: 13%">
+                    <select name="city" lay-filter="city" id="city">
                         <option value="">城市</option>
                     </select>
                 </div>
-                <div class="layui-input-inline" style="width: 10%">
-                    <select name="area" lay-filter="area" disabled id="area">
+                <div class="layui-input-inline" style="width: 13%">
+                    <select name="area" lay-filter="area" id="area">
                         <option value="">区域</option>
                     </select>
                 </div>
-                <div class="layui-inline">
-                    <label class="">&nbsp;时间段：</label>
-                    <div class="layui-input-inline" style="width: 30%">
-                        <input type="text" value="" lay-verify="startDay" placeholder="起始日期" readonly
-                               class="layui-input startDay">
-                    </div>
-                    <label class="">-</label>
-                    <div class="layui-input-inline" style="width: 30%">
-                        <input type="text" value="" lay-verify="endDay" placeholder="截止日期" readonly
-                               class="layui-input endDay">
-                    </div>
+                <div class="layui-input-inline" style="width: 13%">
+                    <select name="point" lay-filter="point" id="point">
+                        <option value="">网点</option>
+                    </select>
                 </div>
                 <div class="layui-inline">
                     <a class="layui-btn search_btn" lay-filter="search_btn" data-type="reload" lay-submit>查询</a>
@@ -51,8 +45,8 @@
                     </div>
                 </div>
                 <div class="layui-inline" style="float: right">
-                    <a class="layui-btn layui-btn-normal addNews_btn">制作新广告</a>
-                    <a class="layui-btn layui-btn-danger layui-btn-normal" id="delAll_btn">批量删除</a>
+                    <a class="layui-btn layui-btn-warm" id="put-btn">投放广告</a>
+                    <a class="layui-btn layui-btn-danger layui-btn-normal" id="delAll-btn">批量删除</a>
                 </div>
             </div>
         </form>
@@ -68,6 +62,7 @@
 <script type="text/javascript" src="../../js/jquery-1.11.2.min.js"></script>
 <script type="text/javascript" src="../../js/jquery.cookie.js"></script>
 <script type="text/javascript" src="../../layui/layui.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
 <script type="text/javascript" src="ListAdvertisingPut.js"></script>
 </body>
 </html>

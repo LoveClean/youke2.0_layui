@@ -1,17 +1,17 @@
 layui.config({
     base: "../../js/"
 }).extend({
-    "address": "address"
+    "common" : "common"
 });
-layui.use(['form', 'layer', 'table', "address"], function () {
+layui.use(['form', 'layer', 'table',"common"], function () {
     var form = layui.form,
         layer = parent.layer === undefined ? layui.layer : top.layer,
         $ = layui.jquery,
         table = layui.table,
-        address = layui.address;
+        common = layui.common;
 
-    //获取省信息
-    address.provinces();
+    //权限控制
+    common.accessControl();
 
     //列表
     var tableIns = table.render({

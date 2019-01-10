@@ -4,6 +4,34 @@ layui.use(['form', 'layer', 'table'], function () {
         $ = layui.jquery,
         table = layui.table;
 
+    //获取省信息
+    var level = $.cookie("level");
+    if (level.length === 6) {
+        console.log("县区管理员没有添加会员权限");
+        $(".addNews_btn").addClass("layui-btn-disabled");
+    }else {
+        //点击新增按钮事件
+        $(".addNews_btn").click(function () {
+            var index = layui.layer.open({
+                title: "新增管理员",
+                type: 2,
+                area: ["600px", "600px"],
+                content: "AddAdmin.html",
+                shade: 0.8,
+                shadeClose: true,
+                success: function (layero, index) {
+                    $(".layui-layer-content").css("overflow","inherit");
+                    var body = layui.layer.getChildFrame('body', index);
+                    setTimeout(function () {
+                        layui.layer.tips('点击此处关闭', '.layui-layer-setwin .layui-layer-close', {
+                            tips: 3
+                        });
+                    }, 500)
+                }
+            })
+        });
+    }
+
     //用户列表
     layer.load();
     var tableIns = table.render({
@@ -33,6 +61,7 @@ layui.use(['form', 'layer', 'table'], function () {
             {field: 'truename', title: '真实姓名', minWidth: 100, align: "center"},
             {field: 'phone', title: '手机号', align: 'center'},
             {field: 'levelNmae', title: '身份', align: 'center'},
+            {field: 'levelAddress', title: '管辖范围', align: 'center'},
             {
                 field: 'status', title: '状态', width: 100, align: 'center', templet: function (d) {
                     if (d.status == 1) {
@@ -53,10 +82,10 @@ layui.use(['form', 'layer', 'table'], function () {
     form.on("submit(search_btn)", function (data) {
         layer.load();
         table.reload("dataTable", {
-            url: $.cookie("tempUrl") + 'manager/search_user2.do',
+            url: $.cookie("tempUrl") + 'admin/selectListBySearch',
             where: {
-                account: $("#account").val(),
-                email: "",
+                phone: $("#account").val(),
+                level: "",
                 token: $.cookie("token")
             }
         })
@@ -90,25 +119,6 @@ layui.use(['form', 'layer', 'table'], function () {
         window.location.reload();
     });
 
-    //点击新增按钮事件
-    $(".addNews_btn").click(function () {
-        var index = layui.layer.open({
-            title: "新增管理员",
-            type: 2,
-            area: ["500px", "600px"],
-            content: "AddAdmin.html",
-            shade: 0.8,
-            shadeClose: true,
-            success: function (layero, index) {
-                var body = layui.layer.getChildFrame('body', index);
-                setTimeout(function () {
-                    layui.layer.tips('点击此处关闭', '.layui-layer-setwin .layui-layer-close', {
-                        tips: 3
-                    });
-                }, 500)
-            }
-        })
-    });
 
     //列表操作
     table.on('tool(userList)', function (obj) {

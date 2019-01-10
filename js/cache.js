@@ -86,8 +86,11 @@ layui.use(['form', 'jquery', "layer"], function () {
     //安全退出
     $(".signOut").click(function () {
         $.ajax({
-            url: $.cookie("tempUrl") + "manager/logout?token=" + $.cookie("token"),
-            type: "GET",
+            url: $.cookie("tempUrl") + "admin/logout",
+            type: "POST",
+            headers:{
+                "X-Access-Auth-Token":$.cookie("token")
+            },
             success: function (result) {
                 if (result.code === 0) {
                     $.cookie('truename', "", {path: '/'});

@@ -16,19 +16,6 @@ layui.use(['form', 'layer', 'table', 'laydate', 'laytpl', "address"], function (
     //获取省信息
     address.provinces();
 
-    //获取设备分组
-    $.ajax({
-        url: $.cookie("tempUrl") + "devicegroup/get_group.do?token=" + $.cookie("token"),
-        type: "POST",
-        success: function (result) {
-            $.each(result.data,
-                function (index, item) {
-                    $("#equipment").append($('<option value=' + item.id + '>' + item.name + '</option>'));
-                });
-            form.render();
-        }
-    });
-
     //根据地区加载楼宇
     form.on('select(area)', function (data) {
         $("#buildFlag").removeAttr("disabled");
@@ -86,8 +73,8 @@ layui.use(['form', 'layer', 'table', 'laydate', 'laytpl', "address"], function (
     //列表渲染
     table.render({
         elem: '#dataList',
-        url: $.cookie("tempUrl") + 'playdelivery/list_delivery.do',
-        method: 'post',
+        url: $.cookie("tempUrl") + 'AdDelivery/selectList',
+        method: 'GET',
         where: {token: $.cookie("token")},
         request: {
             pageName: 'pageNum' //页码的参数名称，默认：page
@@ -193,21 +180,6 @@ layui.use(['form', 'layer', 'table', 'laydate', 'laytpl', "address"], function (
             type: 2,
             area: ["550px", "400px"],
             content: "livePutAdd.html",
-            shade: 0.8,
-            shadeClose: true,
-            success: function (layero, index) {
-
-            }
-        })
-    });
-
-    //点击投放按钮事件
-    $("#putGroup_btn").click(function () {
-        var index = layui.layer.open({
-            title: "按设备分组投放",
-            type: 2,
-            area: ["550px", "400px"],
-            content: "livePutAddTwo.html",
             shade: 0.8,
             shadeClose: true,
             success: function (layero, index) {

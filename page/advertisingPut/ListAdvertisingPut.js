@@ -3,64 +3,82 @@ layui.config({
 }).extend({
     "address": "address"
 });
-layui.use(['form', 'layer', 'table', 'laydate', 'laytpl', "address", 'util'], function () {
+layui.use(['form', 'layer', 'table', "address", 'util'], function () {
     var form = layui.form,
         layer = parent.layer === undefined ? layui.layer : top.layer,
         $ = layui.jquery,
-        laytpl = layui.laytpl,
-        laydate = layui.laydate,
-        table = layui.table;
-    address = layui.address;
-    util = layui.util;
+        table = layui.table,
+        address = layui.address,
+        util = layui.util;
 
-    //获取省信息
-    address.provinces();
+    var level = $.cookie("level");
+    if(level.length === 0){
+        address.provinces();
 
-    //请选择开始日期
-    laydate.render({
-        elem: '.startDay',
-        format: 'yyyy-MM-dd',
-        trigger: 'click',
-        max: 0,
-        mark: {"0-1-1": "元旦"},
-        done: function (value, date) {
-            if (date.month === 1 && date.date === 1) { //点击每年1月1日，弹出提示语
-                layer.msg('今天是元旦，新年快乐！');
-            }
-        }
+    }else if(level.length === 2){
+        address.init1(level.slice(0,2));
+        $("#province").attr("disabled","disabled");
+
+    }else if(level.length === 4){
+        address.init2(level.slice(0,2),level.slice(0,4));
+        $("#province").attr("disabled","disabled");
+        $("#city").attr("disabled","disabled");
+
+    }else if(level.length === 6){
+        address.init3(level.slice(0,2),level.slice(0,4),level);
+        $("#province").attr("disabled","");
+        $("#city").attr("disabled","");
+        $("#area").attr("disabled","");
+        loadPoint(level);
+    }
+    form.render();
+
+
+    //根据地区加载网点
+    form.on('select(area)', function (data) {
+        loadPoint(data.value);
     });
-    //请选择截止日期
-    laydate.render({
-        elem: '.endDay',
-        format: 'yyyy-MM-dd',
-        trigger: 'click',
-        max: 0,
-        mark: {"0-1-1": "元旦"},
-        done: function (value, date) {
-            if (date.month === 1 && date.date === 1) { //点击每年1月1日，弹出提示语
-                layer.msg('今天是元旦，新年快乐！');
-            }
+
+    function loadPoint(data) {
+        $("#point").removeAttr("disabled");
+        var buildEl = $("#point");
+        buildEl.empty();
+        buildEl.append($("<option value=''>请选择网点</option>"));
+        form.render('select');
+        if (data === "") {
+            $("#point").attr("disabled", true);
+            buildEl.attr("disabled", "");
+            form.render('select');
+        } else {
+            $.ajax({
+                url: $.cookie("tempUrl") + "maps/selectListBySearch?areaId=" + data + "&name=&pageNum=1&pageSize=999",
+                type: "GET",
+                headers: {
+                    "X-Access-Auth-Token": $.cookie("token")
+                },
+                contentType: "application/json;charset=utf-8",
+                success: function (d) {
+                    var builds = d.content;
+                    if (builds) {
+                        $.each(builds, function (index, item) {
+                            buildEl.append($("<option value=" + item.id + ">" + item.name + "</option>"))
+                        });
+                        buildEl.removeAttr("disabled");
+                        form.render('select'); //更新 lay-filter="test2" 所在容器内的全部 select 状态
+                    }
+                },
+                error: function () {
+                    console.log("请求ERROR");
+                }
+            })
         }
-    });
-    //校验日期
-    form.verify({
-        startDay: function (value) {
-            if (new Date(value) >= new Date($(".endDay").val())) {
-                return "起始日期需小于截止日期！";
-            }
-        }
-        // ,
-        // endDay: function (value) {
-        //     if (new Date(value) <= new Date($(".startDay").val())) {
-        //         return "请选择截止日期！";
-        //     }
-        // }
-    });
+    }
+
     //列表
     var tableIns = table.render({
         elem: '#dataList',
         url: $.cookie("tempUrl") + 'AdDelivery/selectList',
-        method: 'get',
+        method: 'Get',
         where: {token: $.cookie("token")},
         request: {
             pageName: 'pageNum' //页码的参数名称，默认：page
@@ -81,39 +99,34 @@ layui.use(['form', 'layer', 'table', 'laydate', 'laytpl', "address", 'util'], fu
         id: "dataList",
         cols: [[
             {type: 'checkbox', fixed: 'left', width: 50},
-            {field: 'id', title: '节目编号', width: 100, align: "center"},
-            {field: 'adId', title: '广告名称', minWidth: 120, align: "center"},
-            {field: 'areaId', title: '投放区域', minWidth: 120, align: "center"},
-            {field: 'addressId', title: '详细地址', minWidth: 120, align: "center"},
+            {field: 'adId', title: '节目编号', width: 100, align: "center"},
+            {field: 'adName', title: '广告名称', minWidth: 120, align: "center"},
+            {field: 'areaAddress', title: '投放城市', minWidth: 120, align: "center"},
+            {field: 'addressName', title: '投放网点', minWidth: 120, align: "center"},
             {field: 'priority', title: '优先级', minWidth: 120, align: "center"},
             {
-                field: 'begintime', title: '开始时间', minWidth: 120, align: 'center', templet: function (d) {
-                    return util.toDateString(d.begintime)
+                field: 'beginTime', title: '开始时间', minWidth: 120, align: 'center', templet: function (d) {
+                    return util.toDateString(d.beginTime)
                 }
             },
             {
-                field: 'endtime', title: '结束时间', minWidth: 120, align: 'center', templet: function (d) {
-                    return util.toDateString(d.endtime)
+                field: 'endTime', title: '结束时间', minWidth: 120, align: 'center', templet: function (d) {
+                    return util.toDateString(d.endTime)
                 }
             },
+            // {field: 'createBy', title: '投放人', minWidth: 120, align: "center"},
             {title: '操作', minWidth: 100, templet: '#userListBar', fixed: "right", align: "center"}
         ]]
     });
 
     //搜索
     form.on("submit(search_btn)", function (data) {
-        var endDay = $(".endDay").val();
-        if (endDay == null || endDay == "") {
-            endDay = "2099-12-12"
-        }
         table.reload("dataList", {
-            url: $.cookie("tempUrl") + 'addelivery/search_delivery2.do',
+            url: $.cookie("tempUrl") + 'AdDelivery/selectListBySearch',
+            method: 'GET',
             where: {
-                areaId: areaId,
-                deliveryType: deliveryType,
-                groupId: groupId,
-                beginTime: $(".startDay").val(),
-                endTime: endDay,
+                areaId: data.field.area ? data.field.area : (data.field.city ? data.field.city : data.field.province),
+                addressId: data.field.point,
                 token: $.cookie("token")
             }
         })
@@ -124,12 +137,12 @@ layui.use(['form', 'layer', 'table', 'laydate', 'laytpl', "address", 'util'], fu
         window.location.reload();
     });
 
-    // 按楼宇投放
-    $("#putBuild_btn").click(function () {
+    // 投放
+    $("#put-btn").click(function () {
         var index = layui.layer.open({
-            title: "按楼宇投放",
+            title: "投放广告",
             type: 2,
-            area: ["700px", "500px"],
+            area: ["600px", "400px"],
             content: "AddAdvertisingPut.html",
             shade: 0.8,
             shadeClose: true,
@@ -138,22 +151,6 @@ layui.use(['form', 'layer', 'table', 'laydate', 'laytpl', "address", 'util'], fu
             }
         })
     });
-
-    // 按设备分组投放
-    $("#putGroup_btn").click(function () {
-        var index = layui.layer.open({
-            title: "按设备分组投放",
-            type: 2,
-            area: ["700px", "500px"],
-            content: "AddAdvertisingPutTwo.html",
-            shade: 0.8,
-            shadeClose: true,
-            success: function (layero, index) {
-
-            }
-        })
-    });
-
     //批量删除
     $("#delAll_btn").click(function () {
         let delList = table.checkStatus('dataList'); //dataList 即为基础参数 id 对应的值
@@ -171,7 +168,7 @@ layui.use(['form', 'layer', 'table', 'laydate', 'laytpl', "address", 'util'], fu
                     type: "POST",
                     success: function (result) {
                         layer.msg("删除成功");
-                        window.location.href = "ListAdvertisingPut.html";
+                        window.location.href = "advertisingPut.html";
                     }
                 });
                 tableIns.reload();
@@ -217,12 +214,12 @@ layui.use(['form', 'layer', 'table', 'laydate', 'laytpl', "address", 'util'], fu
                 title: "修改楼宇投放",
                 type: 2,
                 area: ["600px", "400px"],
-                content: "UpdAdvertisingPut.html",
+                content: "advertisingPutUpt.html",
                 shade: 0.8,
                 shadeClose: true,
                 success: function (layero, index) {
                     var body = layui.layer.getChildFrame('body', index);
-                    body.find("#maps").attr("data-id", data.id)
+                    body.find("#build").attr("data-id", data.id)
                     setTimeout(function () {
                         layui.layer.tips('点击此处关闭', '.layui-layer-setwin .layui-layer-close', {
                             tips: 3
@@ -236,7 +233,7 @@ layui.use(['form', 'layer', 'table', 'laydate', 'laytpl', "address", 'util'], fu
                 title: "修改设备分组投放",
                 type: 2,
                 area: ["600px", "400px"],
-                content: "UpdAdvertisingPutTwo.html",
+                content: "advertisingPutUptTwo.html",
                 shade: 0.8,
                 shadeClose: true,
                 success: function (layero, index) {

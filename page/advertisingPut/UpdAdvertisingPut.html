@@ -63,7 +63,7 @@
     }).extend({
         "address": "address"
     })
-    layui.use(['form', 'layer', "address", 'laydate', 'util'], function () {
+    layui.use(['form', 'layer', "address", 'laydate' , 'util'], function () {
         var form = layui.form,
             layer = parent.layer === undefined ? layui.layer : top.layer,
             $ = layui.jquery,
@@ -71,16 +71,16 @@
             laydate = layui.laydate,
             util = layui.util;
 
-        const DELIVER_TYPE = 1;
+        const DELIVER_TYPE=1;
 
         var buildEl = $("#build");
 
         //session取值
-        var areaid = sessionStorage.getItem("areaId");
-        var buildingid = sessionStorage.getItem("buildingId");
+        var areaid=sessionStorage.getItem("areaId");
+        var buildingid=sessionStorage.getItem("buildingId");
         var dateTime = sessionStorage.getItem("dateTime");
-        address.init(areaid.slice(0, 2), areaid.slice(0, 4), areaid);//初始化地址
-        loadBuildsInit(areaid, buildingid); //初始化楼宇
+        address.init(areaid.slice(0,2),areaid.slice(0,4),areaid);//初始化地址
+        loadBuildsInit(areaid,buildingid); //初始化楼宇
 
         //日期时间控件
         laydate.render({
@@ -89,7 +89,7 @@
             range: '~',    // 开启时间段选择
             calendar: true,    // 公立节日
             format: 'yyyy-MM-dd HH:mm:ss',
-            value: dateTime, // 初始化
+            value: dateTime , // 初始化
             trigger: 'click',
             position: 'fixed',
             min: 0,
@@ -102,8 +102,7 @@
         form.on('select(area)', function (data) {
             loadBuilds(data.value);
         });
-
-        function loadBuilds(areaid) {
+        function loadBuilds(areaid){
             buildEl.empty();
             form.render('select');
             if (areaid === "") {
@@ -129,7 +128,7 @@
         }
 
         //加载楼宇并初始化
-        function loadBuildsInit(areaid, buildingid) {
+        function loadBuildsInit(areaid,buildingid){
             buildEl.empty();
             form.render('select');
             if (areaid === "") {
@@ -157,7 +156,7 @@
 
         //提交
         form.on("submit(submit)", function (data) {
-            var dateTime = $(".dateTime").val().split("~");
+            var dateTime=$(".dateTime").val().split("~");
             //弹出loading
             var index = top.layer.msg('数据提交中，请稍候', {icon: 16, time: false, shade: 0.8});
             $.ajax({

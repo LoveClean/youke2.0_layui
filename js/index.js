@@ -22,6 +22,17 @@ layui.use(['bodyTab', 'form', 'element', 'layer', 'jquery'], function () {
         window.location.href = "../login.html";
     }
     $(".truename").append($.cookie("truename"));
+    var level = $.cookie("level");
+    if(level.length === 0){
+        $(".level").html("全国管理员")
+    }else if(level.length === 2){
+        $(".level").html("省级管理员")
+    }else if(level.length === 4){
+        $(".level").html("市级管理员")
+    }else if(level.length === 6){
+        $(".level").html("县区管理员")
+    }
+
     //禁止后退按钮
     if (window.history && window.history.pushState) {
         $(window).on('popstate', function () {

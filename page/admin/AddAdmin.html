@@ -38,32 +38,32 @@
             <input type="password" class="layui-input" lay-filter="rePassword" lay-verify="required" name="rePassword" placeholder="请再次输入密码">
         </div>
     </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">身份:</label>
-        <div class="layui-input-block">
-            <select name="type" lay-filter="type" id="type" lay-verify="required">
-                <option value="1">区域管理员</option>
-                <option value="2">市级管理员</option>
-                <option value="3">省级管理员</option>
-                <option value="4">全国管理员</option>
-            </select>
-        </div>
-    </div>
-    <div class="layui-form-item" id="areaWrap">
-        <label class="layui-form-label">管理区域:</label>
-        <div class="layui-input-block">
+    <!--<div class="layui-form-item">-->
+        <!--<label class="layui-form-label">身份：</label>-->
+        <!--<div class="layui-input-block">-->
+            <!--<select name="type" lay-filter="type" id="type" lay-verify="required">-->
+                <!--<option value="1">区域管理员</option>-->
+                <!--<option value="2">市级管理员</option>-->
+                <!--<option value="3">省级管理员</option>-->
+                <!--<option value="4">全国管理员</option>-->
+            <!--</select>-->
+        <!--</div>-->
+    <!--</div>-->
+    <div class="layui-form-item layui-row userAddress">
+        <label class="layui-form-label">管辖范围：</label>
+        <div class="layui-input-inline">
             <select name="province" lay-filter="province" class="province" id="province">
-                <option value="">省份</option>
+                <option value="">请选择省</option>
             </select>
         </div>
-        <div class="layui-input-block">
-            <select name="city" lay-filter="city" disabled id="city">
-                <option value="">城市</option>
+        <div class="layui-input-inline">
+            <select name="city" lay-filter="city" id="city">
+                <option value="">请选择市</option>
             </select>
         </div>
-        <div class="layui-input-block">
-            <select name="area" lay-filter="area" disabled id="area">
-                <option value="">区域</option>
+        <div class="layui-input-inline">
+            <select name="area" lay-filter="area" id="area">
+                <option value="">请选择县/区</option>
             </select>
         </div>
     </div>
