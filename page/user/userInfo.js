@@ -19,11 +19,8 @@ layui.use(['form', 'layer', 'upload', 'laydate'], function () {
                 $(".id").attr("value", result.data.id);
                 $(".phone").attr("value", result.data.phone);
                 $(".truename").attr("value", result.data.truename);
-                if (result.data.level == "000000") {
-                    $(".level").attr("value", "全国管理员");
-                } else {
-                    $(".level").attr("value", "管理员");
-                }
+                $(".level").val(result.data.levelName);
+                $(".levelAddress").val(result.data.levelAddress);
             }
         });
     });
@@ -33,7 +30,7 @@ layui.use(['form', 'layer', 'upload', 'laydate'], function () {
         var index = layer.msg('提交中，请稍候', {icon: 16, time: false, shade: 0.8});
 
         $.ajax({
-            url: $.cookie("tempUrl") + "admin/updateByPrimaryKeySelective?token=" + $.cookie("token"),
+            url: $.cookie("tempUrl") + "admin/updateMeByPrimaryKeySelective?token=" + $.cookie("token"),
             type: "put",
             datatype: "application/json",
             contentType: "application/json;charset=utf-8",
@@ -43,14 +40,13 @@ layui.use(['form', 'layer', 'upload', 'laydate'], function () {
             }),
             success: function (result) {
                 if (result.httpStatus == 200) {
-                    layer.msg("更新成功,请重新登陆...");
+                    layer.msg("更新成功");
                     setTimeout(function () {
                         top.layer.close(index);
                         layer.closeAll("iframe");
-                        //跳转至登陆界面
-                        $.cookie('truename', "", {path: '/'});
-                        $.cookie('token', "", {path: '/'});
-                        parent.location.href = "../../login.html";
+                        // 刷新主界面
+                        $.cookie('truename', $(".truename").val(), {path: '/'});
+                        top.location.reload();
                     }, 1000);
                 } else {
                     layer.alert(result.exception, {icon: 7, anim: 6});

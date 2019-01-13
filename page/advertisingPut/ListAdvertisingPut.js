@@ -12,23 +12,22 @@ layui.use(['form', 'layer', 'table', "address", 'util'], function () {
         util = layui.util;
 
     var level = $.cookie("level");
-    if(level.length === 0){
+    if (level.length === 0) {
         address.provinces();
+    } else if (level.length === 2) {
+        address.init1(level.slice(0, 2));
+        $("#province").attr("disabled", "disabled");
 
-    }else if(level.length === 2){
-        address.init1(level.slice(0,2));
-        $("#province").attr("disabled","disabled");
+    } else if (level.length === 4) {
+        address.init2(level.slice(0, 2), level.slice(0, 4));
+        $("#province").attr("disabled", "disabled");
+        $("#city").attr("disabled", "disabled");
 
-    }else if(level.length === 4){
-        address.init2(level.slice(0,2),level.slice(0,4));
-        $("#province").attr("disabled","disabled");
-        $("#city").attr("disabled","disabled");
-
-    }else if(level.length === 6){
-        address.init3(level.slice(0,2),level.slice(0,4),level);
-        $("#province").attr("disabled","");
-        $("#city").attr("disabled","");
-        $("#area").attr("disabled","");
+    } else if (level.length === 6) {
+        address.init3(level.slice(0, 2), level.slice(0, 4), level);
+        $("#province").attr("disabled", "");
+        $("#city").attr("disabled", "");
+        $("#area").attr("disabled", "");
         loadPoint(level);
     }
     form.render();
@@ -99,7 +98,7 @@ layui.use(['form', 'layer', 'table', "address", 'util'], function () {
         id: "dataList",
         cols: [[
             {type: 'checkbox', fixed: 'left', width: 50},
-            {field: 'adId', title: '节目编号', width: 100, align: "center"},
+            {field: 'id', title: '投放编号', width: 100, align: "center"},
             {field: 'adName', title: '广告名称', minWidth: 120, align: "center"},
             {field: 'areaAddress', title: '投放城市', minWidth: 120, align: "center"},
             {field: 'addressName', title: '投放网点', minWidth: 120, align: "center"},
@@ -187,8 +186,8 @@ layui.use(['form', 'layer', 'table', "address", 'util'], function () {
         } else if (layEvent === 'del') { //删除
             layer.confirm('确定删除此广告投放？', {icon: 3, title: '提示信息'}, function (index) {
                 $.ajax({
-                    url: $.cookie("tempUrl") + "addelivery/delete.do?token=" + $.cookie("token") + "&id=" + data.id,
-                    type: "POST",
+                    url: $.cookie("tempUrl") + "AdDelivery/deleteByPrimaryKey?token=" + $.cookie("token") + "&id=" + data.id,
+                    type: "DELETE",
                     success: function (result) {
                         if (result.httpStatus === 200) {
                             layer.msg("删除成功");
@@ -206,47 +205,28 @@ layui.use(['form', 'layer', 'table', "address", 'util'], function () {
     });
 
     function edit(data) {
-        sessionStorage.setItem("areaId", data.areaid);
-        sessionStorage.setItem("dateTime", util.toDateString(data.begintime) + " ~ " + util.toDateString(data.endtime));
-        if (data.delivertype === 1) {
-            sessionStorage.setItem("buildingId", data.buildingOrGroupId);
-            var index = layui.layer.open({
-                title: "修改楼宇投放",
-                type: 2,
-                area: ["600px", "400px"],
-                content: "advertisingPutUpt.html",
-                shade: 0.8,
-                shadeClose: true,
-                success: function (layero, index) {
-                    var body = layui.layer.getChildFrame('body', index);
-                    body.find("#build").attr("data-id", data.id)
-                    setTimeout(function () {
-                        layui.layer.tips('点击此处关闭', '.layui-layer-setwin .layui-layer-close', {
-                            tips: 3
-                        });
-                    }, 500)
-                }
-            })
-        } else {
-            sessionStorage.setItem("groupId", data.buildingOrGroupId);
-            var index = layui.layer.open({
-                title: "修改设备分组投放",
-                type: 2,
-                area: ["600px", "400px"],
-                content: "advertisingPutUptTwo.html",
-                shade: 0.8,
-                shadeClose: true,
-                success: function (layero, index) {
-                    var body = layui.layer.getChildFrame('body', index);
-                    body.find("#group").attr("data-id", data.id)
-                    setTimeout(function () {
-                        layui.layer.tips('点击此处关闭', '.layui-layer-setwin .layui-layer-close', {
-                            tips: 3
-                        });
-                    }, 500)
-                }
-            })
-        }
+        sessionStorage.setItem("areaId", data.areaId);
+        sessionStorage.setItem("dateTime", util.toDateString(data.beginTime) + " ~ " + util.toDateString(data.endTime));
+        sessionStorage.setItem("pointId", data.addressId);
+        var index = layui.layer.open({
+            title: "修改投放",
+            type: 2,
+            area: ["600px", "400px"],
+            content: "UpdAdvertisingPut.html",
+            shade: 0.8,
+            shadeClose: true,
+            success: function (layero, index) {
+                var body = layui.layer.getChildFrame('body', index);
+                body.find("#point").attr("data-id", data.id);
+                body.find("#priority").val(data.priority);
+                form.render('select');
+                setTimeout(function () {
+                    layui.layer.tips('点击此处关闭', '.layui-layer-setwin .layui-layer-close', {
+                        tips: 3
+                    });
+                }, 500)
+            }
+        })
     }
 
 

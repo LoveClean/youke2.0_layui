@@ -9,9 +9,21 @@ layui.use(['form', 'layer', "address"], function () {
         $ = layui.jquery,
         address = layui.address;
 
-    var dataAddress = sessionStorage.getItem("dataAddress");
-    //获取省信息
-    address.init(dataAddress.slice(0, 2), dataAddress.slice(0, 4), dataAddress);//初始化地址
+    var pointAreaId = sessionStorage.getItem("pointAreaId");
+    address.init3(pointAreaId.slice(0, 2), pointAreaId.slice(0, 4), pointAreaId);//初始化地址
+    console.log("开启权限控制");
+    var level = $.cookie("level");
+    if(level.length === 2){
+        $("#province").attr("disabled","disabled");
+    }else if(level.length === 4){
+        $("#province").attr("disabled","disabled");
+        $("#city").attr("disabled","disabled");
+    }else if(level.length === 6){
+        $("#province").attr("disabled","");
+        $("#city").attr("disabled","");
+        $("#area").attr("disabled","");
+    }
+    form.render();
 
     form.on("submit(UpdDataBtn)", function (data) {
         //弹出loading

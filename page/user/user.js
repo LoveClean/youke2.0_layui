@@ -18,7 +18,7 @@ layui.use(['form', 'layer', 'laydate', 'table', 'laytpl'], function () {
             }
         },
         confirmPwd: function (value, item) {
-            if (!new RegExp($("#newPwd").val()).test(value)) {
+            if (value !== ($("#newPwd").val())) {
                 return "两次输入密码不一致，请重新输入！";
             }
         }

@@ -43,6 +43,7 @@ layui.use(['form', 'layer', 'jquery'], function () {
                         $.cookie('token', result.data.accessToken, {path: '/'});
                         $.cookie('truename', result.data.truename, {path: '/'});
                         $.cookie('level', result.data.level, {path: '/'});
+                        $.cookie('levelAddress', result.data.levelAddress, {path: '/'});
                         setTimeout(function () {
                             window.location.href = "index.html";
                         }, 1000);

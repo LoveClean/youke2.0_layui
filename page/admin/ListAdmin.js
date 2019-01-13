@@ -125,21 +125,19 @@ layui.use(['form', 'layer', 'table'], function () {
         var layEvent = obj.event,
             data = obj.data;
         if (layEvent === 'edit') { //编辑
-            sessionStorage.setItem("adminType", data.type);
+            sessionStorage.setItem("updLevel", data.level);
             var index = layui.layer.open({
                 title: "编辑用户",
                 type: 2,
-                area: ["500px", "400px"],
-                content: "update.html",
+                area: ["600px", "400px"],
+                content: "UpdAdmin.html",
                 shade: 0.8,
                 shadeClose: true,
                 success: function (layero, index) {
                     var body = layui.layer.getChildFrame('body', index);
-                    body.find("input[name=id]").val(data.id);
-                    body.find("input[name=account]").val(data.account);
-                    body.find("input[name=email]").val(data.email);
-                    body.find("input[name=trueName]").val(data.truename);
+                    body.find("input[name=phone]").attr("data-id",data.id);
                     body.find("input[name=phone]").val(data.phone);
+                    body.find("input[name=trueName]").val(data.truename);
                     form.render();
                     setTimeout(function () {
                         layui.layer.tips('点击此处关闭', '.layui-layer-setwin .layui-layer-close', {

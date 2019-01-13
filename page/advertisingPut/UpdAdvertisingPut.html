@@ -14,36 +14,49 @@
 </head>
 <body class="childrenBody">
 <form class="layui-form" style="width:90%; margin: 0 auto">
-    <div class="layui-form-item">
+    <div class="layui-form-item layui-row userAddress">
         <label class="layui-form-label">位置：</label>
-        <div class="layui-input-inline" style="width: 24%">
+        <div class="layui-input-inline">
             <select name="province" lay-filter="province" class="province" id="province">
                 <option value="">请选择省</option>
             </select>
         </div>
-        <div class="layui-input-inline" style="width: 24%">
-            <select name="city" lay-filter="city" disabled id="city">
+        <div class="layui-input-inline">
+            <select name="city" lay-filter="city" id="city">
                 <option value="">请选择市</option>
             </select>
         </div>
-        <div class="layui-input-inline" style="width: 23%">
-            <select name="area" lay-filter="area" disabled id="area">
+        <div class="layui-input-inline">
+            <select name="area" lay-filter="area" id="area">
                 <option value="">请选择县/区</option>
             </select>
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">楼宇：</label>
+        <label class="layui-form-label">网点：</label>
         <div class="layui-input-inline">
-            <select name="build" lay-filter="build" id="build" lay-verify="required" disabled></select>
+            <select name="point" lay-filter="point" id="point" disabled>
+                <option value="">请选择网点</option>
+            </select>
         </div>
-        <div class="layui-form-mid layui-word-aux">请先选择省市区</div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">时间段：</label>
         <div class="layui-input-block">
             <input type="text" class="layui-input dateTime" lay-filter="dateTime" lay-verify="required"
                    placeholder="请选择时间段">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">优先级：</label>
+        <div class="layui-input-inline">
+            <select name="priority" lay-filter="priority" id="priority">
+                <option value="5">5</option>
+                <option value="4">4</option>
+                <option value="3">3</option>
+                <option value="2">2</option>
+                <option value="1">1</option>
+            </select>
         </div>
     </div>
     <hr>
@@ -63,7 +76,7 @@
     }).extend({
         "address": "address"
     })
-    layui.use(['form', 'layer', "address", 'laydate' , 'util'], function () {
+    layui.use(['form', 'layer', "address", 'laydate', 'util'], function () {
         var form = layui.form,
             layer = parent.layer === undefined ? layui.layer : top.layer,
             $ = layui.jquery,
@@ -71,17 +84,27 @@
             laydate = layui.laydate,
             util = layui.util;
 
-        const DELIVER_TYPE=1;
-
-        var buildEl = $("#build");
-
-        //session取值
-        var areaid=sessionStorage.getItem("areaId");
-        var buildingid=sessionStorage.getItem("buildingId");
+        const DELIVER_TYPE = 1;
+        var buildEl = $("#point");
+        var areaId = sessionStorage.getItem("areaId");
+        var pointId = sessionStorage.getItem("pointId");
         var dateTime = sessionStorage.getItem("dateTime");
-        address.init(areaid.slice(0,2),areaid.slice(0,4),areaid);//初始化地址
-        loadBuildsInit(areaid,buildingid); //初始化楼宇
-
+        address.init3(areaId.slice(0, 2), areaId.slice(0, 4), areaId);//初始化地址
+        if (areaId.length === 6) {
+            loadPointInit(areaId, pointId); //初始化楼宇
+        }
+        var level = $.cookie("level");
+        if (level.length === 2) {
+            $("#province").attr("disabled","disabled");
+        } else if (level.length === 4) {
+            $("#province").attr("disabled", "disabled");
+            $("#city").attr("disabled", "disabled");
+        } else if (level.length === 6) {
+            $("#province").attr("disabled", "");
+            $("#city").attr("disabled", "");
+            $("#area").attr("disabled", "");
+        }
+        form.render();
         //日期时间控件
         laydate.render({
             elem: '.dateTime',
@@ -89,7 +112,7 @@
             range: '~',    // 开启时间段选择
             calendar: true,    // 公立节日
             format: 'yyyy-MM-dd HH:mm:ss',
-            value: dateTime , // 初始化
+            value: dateTime, // 初始化
             trigger: 'click',
             position: 'fixed',
             min: 0,
@@ -98,57 +121,74 @@
             }
         });
 
-        //监听地区切换，加载楼宇
+        //根据地区加载网点
         form.on('select(area)', function (data) {
-            loadBuilds(data.value);
+            loadPoint(data.value);
         });
-        function loadBuilds(areaid){
+
+        function loadPoint(data) {
             buildEl.empty();
+            buildEl.append($("<option value=''>请选择网点</option>"));
             form.render('select');
-            if (areaid === "") {
+            if (data === "") {
                 buildEl.attr("disabled", "");
+                form.render('select');
             } else {
                 $.ajax({
-                    url: $.cookie("tempUrl") + "building/get_building_areaId.do?token=" + $.cookie("token"),
-                    type: "POST",
+                    url: $.cookie("tempUrl") + "maps/selectListBySearch?areaId=" + data + "&name=&pageNum=1&pageSize=999",
+                    type: "GET",
+                    headers: {
+                        "X-Access-Auth-Token": $.cookie("token")
+                    },
                     contentType: "application/json;charset=utf-8",
-                    data: areaid,
                     success: function (d) {
-                        var builds = d.data;
-                        if (builds !== null) {
+                        var builds = d.content;
+                        if (builds.length > 0) {
                             $.each(builds, function (index, item) {
                                 buildEl.append($("<option value=" + item.id + ">" + item.name + "</option>"))
                             });
                             buildEl.removeAttr("disabled");
+                            form.render('select'); //更新 lay-filter="test2" 所在容器内的全部 select 状态
                         }
-                        form.render('select');
+                    },
+                    error: function () {
+                        console.log("请求ERROR");
                     }
                 })
             }
         }
 
         //加载楼宇并初始化
-        function loadBuildsInit(areaid,buildingid){
+        function loadPointInit(areaid, pointId) {
             buildEl.empty();
+            buildEl.append($("<option value=''>请选择网点</option>"));
             form.render('select');
             if (areaid === "") {
                 buildEl.attr("disabled", "");
+                form.render('select');
             } else {
                 $.ajax({
-                    url: $.cookie("tempUrl") + "building/get_building_areaId.do?token=" + $.cookie("token"),
-                    type: "POST",
+                    url: $.cookie("tempUrl") + "maps/selectListBySearch?areaId=" + areaid + "&name=&pageNum=1&pageSize=999",
+                    type: "GET",
+                    headers: {
+                        "X-Access-Auth-Token": $.cookie("token")
+                    },
                     contentType: "application/json;charset=utf-8",
-                    data: areaid,
                     success: function (d) {
-                        var builds = d.data;
-                        if (builds !== null) {
+                        var builds = d.content;
+                        if (builds.length > 0) {
                             $.each(builds, function (index, item) {
                                 buildEl.append($("<option value=" + item.id + ">" + item.name + "</option>"))
                             });
                             buildEl.removeAttr("disabled");
-                            buildEl.val(buildingid);
+                            if (pointId) {
+                                buildEl.val(pointId);
+                            }
+                            form.render('select'); //更新 lay-filter="test2" 所在容器内的全部 select 状态
                         }
-                        form.render('select');
+                    },
+                    error: function () {
+                        console.log("请求ERROR");
                     }
                 })
             }
@@ -156,22 +196,21 @@
 
         //提交
         form.on("submit(submit)", function (data) {
-            var dateTime=$(".dateTime").val().split("~");
+            var dateTime = $(".dateTime").val().split("~");
             //弹出loading
             var index = top.layer.msg('数据提交中，请稍候', {icon: 16, time: false, shade: 0.8});
             $.ajax({
-                url: $.cookie("tempUrl") + "addelivery/set_delivery.do?token=" + $.cookie("token"),
-                type: "POST",
+                url: $.cookie("tempUrl") + "AdDelivery/updateByPrimaryKeySelective?token=" + $.cookie("token"),
+                type: "PUT",
                 datatype: "application/json",
                 contentType: "application/json;charset=utf-8",
                 data: JSON.stringify({
-                    "adtype": 0,
-                    "areaid": data.field.area,
-                    "begintime": dateTime[0],
-                    "delivertype": DELIVER_TYPE,
-                    "endtime": dateTime[1],
-                    "groupid": data.field.build,
-                    "id": $("#build").attr("data-id")
+                    "id": $("#point").attr("data-id"),
+                    "areaId": data.field.area ? data.field.area : (data.field.city ? data.field.city : data.field.province),
+                    "addressId": data.field.area ? data.field.point : "",
+                    "beginTime": dateTime[0],
+                    "endTime": dateTime[1],
+                    "priority": data.field.priority
                 }),
                 success: function (result) {
                     if (result.httpStatus == 200) {

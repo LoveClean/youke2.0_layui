@@ -32,6 +32,7 @@ layui.use(['bodyTab', 'form', 'element', 'layer', 'jquery'], function () {
     }else if(level.length === 6){
         $(".level").html("县区管理员")
     }
+    $(".levelAddress").html($.cookie("levelAddress"));
 
     //禁止后退按钮
     if (window.history && window.history.pushState) {

@@ -97,7 +97,7 @@ layui.use(['form', 'layer', 'table',"common"], function () {
         if (layEvent === 'edit') { //编辑
             buildUpd(data);
         } else if (layEvent === 'del') { //删除
-            layer.confirm('确定删除此楼宇？', {icon: 3, title: '提示信息'}, function (index) {
+            layer.confirm('确定删除此网点？', {icon: 3, title: '提示信息'}, function (index) {
                 $.ajax({
                     url: $.cookie("tempUrl") + "maps/deleteByPrimaryKey?id=" + data.id,
                     type: "DELETE",
@@ -116,7 +116,7 @@ layui.use(['form', 'layer', 'table',"common"], function () {
 
     //编辑文章
     function buildUpd(data) {
-        sessionStorage.setItem("dataAddress", data.areaId);
+        sessionStorage.setItem("pointAreaId", data.areaId);
         var index = layui.layer.open({
             title: "编辑网点",
             type: 2,

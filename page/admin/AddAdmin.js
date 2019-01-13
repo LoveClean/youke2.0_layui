@@ -9,6 +9,22 @@ layui.use(['form', 'layer', "address"], function () {
         $ = layui.jquery,
         address = layui.address;
 
+    //添加验证规则
+    form.verify({
+        newPwd: function (value, item) {
+            if (value.length < 6) {
+                return "密码长度不能小于6位";
+            } else if (value.length > 13) {
+                return "密码长度不能大于13位";
+            }
+        },
+        confirmPwd: function (value, item) {
+            if (value!==($("input[name='password']").val())) {
+                return "两次输入密码不一致，请重新输入！";
+            }
+        }
+    });
+
     //获取省信息
     var level = $.cookie("level");
     if (level.length === 0) {

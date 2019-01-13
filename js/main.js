@@ -72,7 +72,7 @@ function getLangDate() {
     var second = dateObj.getSeconds(); //当前系统时间的秒钟值
     var timeValue = "" + ((hour >= 12) ? (hour >= 18) ? "晚上" : "下午" : "上午"); //当前时间属于上午、晚上还是下午
     newDate = dateFilter(year) + "年" + dateFilter(month) + "月" + dateFilter(date) + "日 " + " " + dateFilter(hour) + ":" + dateFilter(minute) + ":" + dateFilter(second);
-    document.getElementById("nowTime").innerHTML = "亲爱的" + $.cookie("truename") + "，" + timeValue + "好！ 欢迎使用优客工厂-数字营销系统。当前时间为： " + newDate + "　" + week;
+    document.getElementById("nowTime").innerHTML = "亲爱的" + $.cookie("truename") + "，" + timeValue + "好！ 欢迎使用优客工厂-数字营销系统。当前时间为： " + newDate + "　" + week +"。 您的管辖范围为：" + $.cookie("levelAddress");
     setTimeout("getLangDate()", 1000);
 }
 
