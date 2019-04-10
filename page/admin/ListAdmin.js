@@ -60,14 +60,24 @@ layui.use(['form', 'layer', 'table'], function () {
             {field: 'id', title: 'ID', width: 100, align: 'center'},
             {field: 'truename', title: '真实姓名', minWidth: 100, align: "center"},
             {field: 'phone', title: '手机号', align: 'center'},
-            {field: 'levelNmae', title: '身份', align: 'center'},
+            {field: 'levelName', title: '身份', align: 'center'},
             {field: 'levelAddress', title: '管辖范围', align: 'center'},
             {
                 field: 'status', title: '状态', width: 100, align: 'center', templet: function (d) {
-                    if (d.status == 1) {
-                        return '<input type="checkbox" lay-filter="status" lay-skin="switch" value=' + d.account + ' lay-text="启用|禁用" checked>';
-                    } else if (d.status == 0) {
-                        return '<input type="checkbox" lay-filter="status" lay-skin="switch" value=' + d.account + ' lay-text="启用|禁用" >';
+                    var level = $.cookie("level");
+                    var levelLength = level.length;
+                    if (d.level.substring(0, levelLength) !== level || level == d.level) {
+                        if (d.status == 1) {
+                            return '<input type="checkbox" lay-filter="status" lay-skin="switch" value=' + d.id + ' lay-text="启用|禁用" checked disabled>';
+                        } else if (d.status == 0) {
+                            return '<input type="checkbox" lay-filter="status" lay-skin="switch" value=' + d.id + ' lay-text="启用|禁用" disabled>';
+                        }
+                    }else {
+                        if (d.status == 1) {
+                            return '<input type="checkbox" lay-filter="status" lay-skin="switch" value=' + d.id + ' lay-text="启用|禁用" checked>';
+                        } else if (d.status == 0) {
+                            return '<input type="checkbox" lay-filter="status" lay-skin="switch" value=' + d.id + ' lay-text="启用|禁用" >';
+                        }
                     }
                 }
             },
@@ -96,17 +106,20 @@ layui.use(['form', 'layer', 'table'], function () {
         console.log(data.elem.checked); //开关是否开启，true或者false
         console.log(data.value); //开关value值，也可以通过data.elem.value得到
         $.ajax({
-            url: $.cookie("tempUrl") + "manager/login_forbidden.do?token=" + $.cookie("token") + "&id=" + $(this).siblings().attr("data-id") + "&status=" + status,
-            type: "POST",
+            url: $.cookie("tempUrl") + "admin/updateStatusById",
+            type: "PUT",
+            headers:{
+              "X-Access-Auth-Token" : $.cookie("token")
+            },
             //datatype: "application/json",
             contentType: "application/json;charset=utf-8",
             data: JSON.stringify({
-                "account": data.value,
+                "id": data.value,
                 "status": data.elem.checked ? "1" : "0"
             }),
             success: function (result) {
-                if (result.httpStatus == 200) {
-                    layer.msg(result.data);
+                if (result.code == 0) {
+                    layer.msg("修改成功");
                 } else {
                     layer.alert(result.exception, {icon: 7, anim: 6});
                 }

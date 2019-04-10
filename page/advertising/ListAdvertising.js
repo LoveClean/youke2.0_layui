@@ -23,6 +23,7 @@ layui.use(['form', 'layer', 'table'], function () {
         }
     });
 
+
     //列表
     var tableIns = table.render({
         elem: '#dataTable',
@@ -43,7 +44,7 @@ layui.use(['form', 'layer', 'table'], function () {
         cellMinWidth: 95,
         page: true,
         loading: true,
-        // height: "full-125",
+        height: "full-125",
         limits: [5, 10, 15, 20, 25],
         limit: 10,
         id: "userListTable",

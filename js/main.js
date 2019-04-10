@@ -8,48 +8,40 @@ var sumDevice = "0";
 var sumMaterial = "0";
 var sumPlay = "0";
 
-// $(function () {
-//     $.ajax({
-//         url: $.cookie("tempUrl") + "others/sumAd?token=" + $.cookie("token"),
-//         type: "GET",
-//         success: function (result) {
-//             sumAd = result.data;
-//             $(".sumAd span").text(sumAd);
-//         }
-//     });
-//     $.ajax({
-//         url: $.cookie("tempUrl") + "others/sumBuild?token=" + $.cookie("token"),
-//         type: "GET",
-//         success: function (result) {
-//             sumBuild = result.data;
-//             $(".sumBuild span").text(sumBuild);
-//         }
-//     });
-//     $.ajax({
-//         url: $.cookie("tempUrl") + "others/sumDevice?token=" + $.cookie("token"),
-//         type: "GET",
-//         success: function (result) {
-//             sumDevice = result.data;
-//             $(".sumDevice span").text(sumDevice);
-//         }
-//     });
-//     $.ajax({
-//         url: $.cookie("tempUrl") + "others/sumMaterial?token=" + $.cookie("token"),
-//         type: "GET",
-//         success: function (result) {
-//             sumMaterial = result.data;
-//             $(".sumMaterial span").text(sumMaterial);
-//         }
-//     });
-//     $.ajax({
-//         url: $.cookie("tempUrl") + "others/sumPlay?token=" + $.cookie("token"),
-//         type: "GET",
-//         success: function (result) {
-//             sumPlay = result.data;
-//             $(".sumPlay span").text(sumPlay);
-//         }
-//     });
-// });
+$(function () {
+    $.ajax({
+        url: $.cookie("tempUrl") + "Ad/selectTotalElements?token=" + $.cookie("token"),
+        type: "GET",
+        success: function (result) {
+            sumAd = result.data;
+            $(".sumAd span").text(sumAd);
+        }
+    });
+    $.ajax({
+        url: $.cookie("tempUrl") + "maps/selectTotalElements?token=" + $.cookie("token"),
+        type: "GET",
+        success: function (result) {
+            sumBuild = result.data;
+            $(".sumBuild span").text(sumBuild);
+        }
+    });
+    $.ajax({
+        url: $.cookie("tempUrl") + "Material/selectTotalElements?token=" + $.cookie("token"),
+        type: "GET",
+        success: function (result) {
+            sumMaterial = result.data;
+            $(".sumMaterial span").text(sumMaterial);
+        }
+    });
+    $.ajax({
+        url: $.cookie("tempUrl") + "admin/selectTotalElements?token=" + $.cookie("token"),
+        type: "GET",
+        success: function (result) {
+            sumPlay = result.data;
+            $(".sumPlay span").text(sumPlay);
+        }
+    });
+});
 
 //值小于10时，在前面补0
 function dateFilter(date) {

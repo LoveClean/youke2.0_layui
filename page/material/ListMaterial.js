@@ -56,13 +56,14 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function () {
             {field: 'groupName', title: '分组名称', minWidth: 180, width: 230, align: "center"},
             {
                 title: '操作', minWidth: 100, width: 150, fixed: "right", align: "center", templet: function (d) {
-                    if (d.editStatus === 1) {
-                        return '<a class="layui-btn layui-btn-xs layui-btn-warm chooes layui-btn-disabled" data-info="' + d.editStatus + '" lay-event="edit">编辑</a>' +
-                            '<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>'
-                    } else {
-                        return '<a class="layui-btn layui-btn-xs layui-btn-warm chooes" data-info="' + d.editStatus + '" lay-event="edit">编辑</a>' +
-                            '<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>'
-                    }
+                    // if (d.editStatus === 1) {
+                    //     return '<a class="layui-btn layui-btn-xs layui-btn-warm chooes layui-btn-disabled" data-info="' + d.editStatus + '" lay-event="edit">编辑</a>' +
+                    //         '<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>'
+                    // } else {
+                    //     return '<a class="layui-btn layui-btn-xs layui-btn-warm chooes" data-info="' + d.editStatus + '" lay-event="edit">编辑</a>' +
+                    //         '<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>'
+                    // }
+                    return '<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>'
                 }
             },
         ]],
@@ -96,8 +97,8 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function () {
                 $.ajax({
                     url: $.cookie("tempUrl") + "Material/deleteByPrimaryKey?id=" + data.id,
                     type: "DELETE",
-                    headers:{
-                        "X-Access-Auth-Token":$.cookie("token")
+                    headers: {
+                        "X-Access-Auth-Token": $.cookie("token")
                     },
                     success: function (result) {
                         if (result.code === 0) {
@@ -153,18 +154,18 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function () {
         if (type === "图片") {
             redirect = '<div style="display: flex;justify-content: center;width: 100%;height: 100%;align-items: center;">' +
                 '<img class="layui-upload-img" style="max-height: 100%;" id="perivew" src="' + data + '"></div>'
-            type2=1;
-            area = ['800px','600px'];
+            type2 = 1;
+            area = ['800px', '600px'];
         } else if (type === "视频") {
             redirect = '<div style="display: flex;justify-content: center;width: 100%;height: 100%;align-items: center;">' +
                 '<video class="layui-upload-img thumbImg" src="' + data + '" controls="controls" id="perivew" width="600" height="400"></video></div>';
-            type2=1;
-            area = ['650px','500px'];
+            type2 = 1;
+            area = ['650px', '500px'];
         } else if (type === "直播") {
             redirect = "../util/video.html";
-            sessionStorage.setItem("url",data);
-            type2=2;
-            area = ['600px','600px'];
+            sessionStorage.setItem("url", data);
+            type2 = 2;
+            area = ['600px', '600px'];
         } else if (type === "音频") {
             redirect = '<audio class="layui-upload-img thumbImg" controls id="perivew" src="' + data + '"></audio>';
             type2 = 1;
